@@ -1,5 +1,4 @@
 import './../../style/cadCadastro.sass';
-import axios from 'axios';
 import api from '../../Service/api';
 import { useForm } from 'react-hook-form';
 import { useState } from 'react';
@@ -16,57 +15,57 @@ const schemaCadUsuario = z.object({
 })
 
 export function CadUsuario() {
-    const [username, setUsername] = useState('');
-    const [email, setEmail] = useState('');
-
     const [mensagem, setMensagem] = useState('');
 
-    const submitRegister = async () => {
-        const registerUser = {
-            username: username,
-            email: email
-        }
+    const {
+        register, // registra o que o usuário digitou
+        handleSubmit, // no momento de enviar o formulário
+        formState: { errors }, // guarda o erro
+        reset
+    } = useForm({
+        resolver: zodResolver(schemaCadUsuario)
+    })
+
+    async function obterDados(data) {
+        console.log("Dados reecebidos: ", data);
 
         try {
-            await api.post('users/', registerUser);
+            await api.post('users/', data);
             setMensagem("Cadastrado com sucesso!");
-
-            setUsername('');
-            setEmail('');
+    
+            reset();
         } catch (error) {
             setMensagem('Ocorreu um erro, tente novamente!');
             console.log(error);
         }
     }
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        if (email && username) {
-            submitRegister();
-        } else {
-            setMensagem('Preencha todos os campos!');
-        }
-    }
+
     return (
-        <form method='POST' onSubmit={handleSubmit}>
+        <form method='POST' onSubmit={handleSubmit(obterDados)}>
             <h1>Cadastro de Usuário</h1>
             <label>Nome: </label>
             <input 
                 type="text" 
-                value={username} 
+                {...register('username')}
                 placeholder='Digite seu nome...' 
-                onChange={(e) => setUsername(e.target.value)}
-                required
             />
+            {errors.username &&
+                <p>{errors.username.message}</p>
+            }
             <label>E-mail: </label>
             <input 
                 type="email" 
-                value={email} 
+                {...register('email')}
                 placeholder='Digite seu email...' 
-                onChange={(e) => setEmail(e.target.value)}
-                required
             />
+            {errors.email &&
+                <p>{errors.email.message}</p>
+            }
             <button type="submit">Cadastrar</button>
             <p>{mensagem}</p>
         </form>
     )
 }
+
+// O required buga o zod, por isso é bom retirar
+// O required é o primeiro a ser lido, depois o zod

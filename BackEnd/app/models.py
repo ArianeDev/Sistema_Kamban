@@ -1,8 +1,14 @@
 from django.db import models
+from django.core.validators import RegexValidator
+
+validate_email = RegexValidator (
+    regex=r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+    message="Digite o email corretamente, deve conter letras minúsculas, números e ponto antes do @, seguido por um domínio.",
+)
 
 class User(models.Model):
     username = models.CharField(max_length=50, unique=True)
-    email = models.EmailField(unique=True, max_length=255)
+    email = models.EmailField(unique=True, max_length=255, validators=[validate_email])
 
     def __str__(self):
         return self.username

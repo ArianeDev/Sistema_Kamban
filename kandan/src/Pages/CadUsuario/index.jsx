@@ -8,10 +8,16 @@ import { zodResolver } from '@hookform/resolvers/zod';
 const schemaCadUsuario = z.object({
     username: z.string()
         .min(5, 'O nome é obrigatório, informe pelo menos 5 caracteres')
-        .max(100, 'O nome deve ter no máximo 100 caracteres'),
+        .max(100, 'O nome deve ter no máximo 100 caracteres')
+        .regex(/^[A-Za-z0-9À-ÿ]+(?: [A-Za-z0-9À-ÿ]+)*$/, {
+            mensage: 'O nome deve conter apenas letras e espaços',
+        }),
     email: z.string()
         .min(1, 'O e-mail é obrigatório')
-        .max(255, 'O e-mail deve ter no máximo 100 caracteres'),
+        .max(255, 'O e-mail deve ter no máximo 100 caracteres')
+        .regex(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, {
+            mensage: 'Email inválido'
+        }),
 })
 
 export function CadUsuario() {

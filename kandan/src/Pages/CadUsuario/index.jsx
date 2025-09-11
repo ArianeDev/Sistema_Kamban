@@ -5,11 +5,12 @@ import { useState } from 'react';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 
+// Ta printando o regex e nao a mensagem
 const schemaCadUsuario = z.object({
     username: z.string()
         .min(5, 'O nome é obrigatório, informe pelo menos 5 caracteres')
         .max(100, 'O nome deve ter no máximo 100 caracteres')
-        .regex(/^[A-Za-z0-9À-ÿ]+(?: [A-Za-z0-9À-ÿ]+)*$/, {
+        .regex(/^[A-Za-zÀ-ÿ]+(?: [A-Za-zÀ-ÿ]+)*$/, {
             mensage: 'O nome deve conter apenas letras e espaços',
         }),
     email: z.string()

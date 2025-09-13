@@ -3,14 +3,41 @@ import api from "../../Service/api";
 import { z } from "zod";
 import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { CircleAlert } from 'lucide-react';
 
 const schemaCadTarefas = z.object({
     descricao: z.string()
+        .trim()
         .min(5, 'A descrição é obrigatória, informe pelo menos 5 caracteres')
-        .max(255, 'A descrição deve ter no máximo 255 caracteres'),
+        .max(255, 'A descrição deve ter no máximo 255 caracteres')
+        .refine(val => {
+            const palavras = val.trim().toLowerCase().split(/\s+/);
+            const palavrasUnicas = new Set(palavras);
+            return palavrasUnicas.size >= palavras.length - 1;
+        }, {
+            message: "Evite repetir a mesma palavra várias vezes",
+        })
+        .regex(/^[\p{L}\p{N}\s!?".;+\-()*%$=]+$/u, {
+            message: "A descrição contém caracteres inválidos",
+        })
+        .transform(val => {
+            const texto = val.trim().toLowerCase();
+            return texto.charAt(0).toUpperCase() + texto.slice(1);
+        }),
     setor: z.string()
+        .trim()
         .min(2, 'O setor é obrigatório')
-        .max(50, 'O setor deve ter no máximo 50 caracteres'),
+        .max(50, 'O setor deve ter no máximo 50 caracteres')
+        .refine(val => {
+            const palavras = val.trim().toLowerCase().split(/\s+/);
+            const palavrasUnicas = new Set(palavras);
+            return palavrasUnicas.size >= palavras.length - 1;
+        }, {
+            message: "Evite repetir a mesma palavra várias vezes",
+        })
+        .regex(/^[\p{L}\p{N}\s!?".;+\-()*%$=]+$/u, {
+            message: "A descrição contém caracteres inválidos",
+        }),
     prioridade_id: z.string()
         .min(1, 'Selecione uma prioridade'),
     status_id: z.string()
@@ -27,13 +54,11 @@ export function CadTarefas() {
     const {
         register,
         handleSubmit,
+        setValue,
         formState: { errors },
         reset
     } = useForm({
         resolver: zodResolver(schemaCadTarefas),
-        defaultValues: {
-            status_id: 1
-        }
     });
 
     async function selectDadosPrioridades() {
@@ -68,6 +93,10 @@ export function CadTarefas() {
         }
     }
 
+    useEffect(() => { // uma forma mais segura de mandar o status como 1 para o back, pois assim o usuário não consegue alterar no código fonte
+        setValue("status_id", "1");
+    }, [setValue]);
+
     useEffect(() => {
         selectDadosPrioridades();
         selectDadosResponsavel();
@@ -76,52 +105,68 @@ export function CadTarefas() {
     return (
         <form method='POST' onSubmit={handleSubmit(obterDados)}>
             <h1>Cadastro de Tarefas</h1>
-            <label>Descrição: </label>
-            <input
-                type="text"
-                {...register('descricao')}
-                placeholder='Digite uma breve descrição...'
-            />
-            {errors.descricao &&
-                <p>{errors.descricao.message}</p>
+            <div className="input_container">
+                <label>Descrição: </label>
+                <input
+                    type="text"
+                    {...register('descricao')}
+                    placeholder='Digite uma breve descrição...'
+                />
+                {errors.descricao &&
+                    <p>
+                        <CircleAlert />
+                        {errors.descricao.message}
+                    </p>
+                }
+            </div>
+            <div className="input_container">
+                <label>Setor: </label>
+                <input 
+                    type="text"
+                    {...register('setor')}
+                    placeholder='Digite o setor...'
+                />
+                {errors.setor &&
+                    <p>
+                        <CircleAlert />
+                        {errors.setor.message}
+                    </p>
+                }
+            </div>
+            <div className="input_container">
+                <label>Prioridade: </label>
+                <select 
+                    name="prioridade" 
+                    {...register('prioridade_id')}
+                >
+                    <option value="">Selecione</option>
+                    {dataPrioridade.map((data) => (
+                        <option key={data.id} value={data.id}>{data.nome}</option>
+                    ))}
+                </select>
+                {errors.prioridade_id &&
+                    <p>{errors.prioridade_id.message}</p>
+                }
+            </div>
+            <div className="input_container">
+                <label>Responsável</label>
+                <select 
+                    name="usuario_id" 
+                    {...register('usuario_id')}
+                >
+                    <option value="">Selecione</option>
+                    {dataResponsavel.map((data) => (
+                        <option key={data.id} value={data.id}>{data.username}</option>
+                    ))}
+                </select>
+                {errors.usuario_id &&
+                    <p>{errors.usuario_id.message}</p>
+                }
+            </div>
+            <button type="submit">Cadastrar</button>
+            {mensagem && 
+                <p>{mensagem}</p>
             }
-            <label>Setor: </label>
-            <input 
-                type="text"
-                {...register('setor')}
-                placeholder='Digite o setor...'
-            />
-            {errors.setor &&
-                <p>{errors.setor.message}</p>
-            }
-            <label>Prioridade: </label>
-            <select 
-                name="prioridade" 
-                {...register('prioridade_id')}
-            >
-                <option value="">Selecione</option>
-                {dataPrioridade.map((data) => (
-                    <option key={data.id} value={data.id}>{data.nome}</option>
-                ))}
-            </select>
-            {errors.prioridade_id &&
-                <p>{errors.prioridade_id.message}</p>
-            }
-            <label>Responsável</label>
-            <select 
-                name="prioridade" 
-                {...register('usuario_id')}
-            >
-                <option value="">Selecione</option>
-                {dataResponsavel.map((data) => (
-                    <option key={data.id} value={data.id}>{data.username}</option>
-                ))}
-            </select>
-            {errors.usuario_id &&
-                <p>{errors.usuario_id.message}</p>
-            }
-            <input type="hidden" value="1" {...register('status_id')} />
-            <input type="submit" value="Cadastrar" />
         </form>
     )
 }

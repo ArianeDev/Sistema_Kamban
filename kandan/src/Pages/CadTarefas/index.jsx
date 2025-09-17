@@ -7,15 +7,17 @@ import { CircleAlert } from 'lucide-react';
 
 const schemaCadTarefas = z.object({
     descricao: z.string()
-        .trim()
         .min(5, 'A descrição é obrigatória, informe pelo menos 5 caracteres')
-        .max(255, 'A descrição deve ter no máximo 255 caracteres')
+        .max(50, 'A descrição deve ter no máximo 50 caracteres')
         .refine(val => {
             const palavras = val.trim().toLowerCase().split(/\s+/);
             const palavrasUnicas = new Set(palavras);
             return palavrasUnicas.size >= palavras.length - 1;
         }, {
             message: "Evite repetir a mesma palavra várias vezes",
+        })
+        .refine(val => val === val.trim(), {
+            message: "Não pode começar ou terminar com espaço",
         })
         .regex(/^[\p{L}\p{N}\s!?".;+\-()*%$=]+$/u, {
             message: "A descrição contém caracteres inválidos",
@@ -25,7 +27,6 @@ const schemaCadTarefas = z.object({
             return texto.charAt(0).toUpperCase() + texto.slice(1);
         }),
     setor: z.string()
-        .trim()
         .min(2, 'O setor é obrigatório')
         .max(50, 'O setor deve ter no máximo 50 caracteres')
         .refine(val => {
@@ -34,6 +35,9 @@ const schemaCadTarefas = z.object({
             return palavrasUnicas.size >= palavras.length - 1;
         }, {
             message: "Evite repetir a mesma palavra várias vezes",
+        })
+        .refine(val => val === val.trim(), {
+            message: "Não pode começar ou terminar com espaço",
         })
         .regex(/^[\p{L}\p{N}\s!?".;+\-()*%$=]+$/u, {
             message: "A descrição contém caracteres inválidos",

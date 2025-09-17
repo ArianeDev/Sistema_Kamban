@@ -2,6 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 import { CadUsuario } from "./Pages/CadUsuario";
 import { CadTarefas } from "./Pages/CadTarefas";
 import App from "./App";
+import { Home } from "./Pages/Home";
 
 const router = createBrowserRouter([
     {
@@ -10,6 +11,10 @@ const router = createBrowserRouter([
         children: [
             {
                 path: '',
+                element: <Home />
+            },
+            {
+                path: 'usuario',
                 element: <CadUsuario />
             },
             {

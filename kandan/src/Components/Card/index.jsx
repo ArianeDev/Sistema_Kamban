@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import "./style.sass";
 import api from "../../Service/api";
 
-export function Card({ item, onDelete}) {
+export function Card({ item, onDelete, patchTarefas }) {
     const [dataStatus, setDataStatus] = useState([]);
+    const [selectStatus, setSelectStatus] = useState('');
 
     async function selectDadosStatus() {
         try {
@@ -19,20 +20,29 @@ export function Card({ item, onDelete}) {
     },[])
 
     return (
-        <div className="card" key={item.id}>
-            <p>Descrição: {item.descricao}</p>
-            <p>Setor: {item.setor}</p>
-            <p>Prioridade: {item.prioridade_id}</p>
-            <p>Vinculado a: {item.usuario_id}</p>
-            <button>Editar</button>
-            <button onClick={onDelete}>Excluir</button>
-            <select>
+        <section className="card" key={item.id}>
+            <p><b>Descrição:</b> {item.descricao}</p>
+            <p><b>Setor:</b> {item.setor}</p>
+            <p><b>Prioridade:</b> {item.prioridade_id}</p>
+            <p><b>Vinculado a:</b> {item.usuario_id}</p>
+            <div 
+                role="section"
+                className="section_card_button"
+            >
+                <button>Editar</button>
+                <button onClick={onDelete}>Excluir</button>
+            </div>
+            <select onChange={(e) => setSelectStatus(e.target.value)}>
                 <option>Selecione</option>
                 {dataStatus.map((data) => (
                     <option key={data.id} value={data.id}>{data.nome}</option>
                 ))}
             </select>
-            <button>Alterar status</button>
-        </div>
+            <button onClick={() => {
+                if (selectStatus) {
+                    patchTarefas(item.id, Number(selectStatus))
+                }
+            }}>Alterar status</button>
+        </section>
     )
 }

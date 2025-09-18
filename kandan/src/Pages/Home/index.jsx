@@ -27,14 +27,15 @@ export function Home() {
         }
     
     }
-    async function patchTarefas(id) {
+    async function patchTarefas(id, status_id) {
+        console.log("Atualizando tarefa", id, "com status", status_id);
         try {
-            await api.patch(`tarefas/${id}/`);
+            await api.patch(`tarefas/${id}/`, { status_id });            
             getTarefas();       
 
-            setMensagem("Tarefa deletado com sucesso");
+            setMensagem("Status atualizado com sucesso");
         } catch (error) {
-            setMensagem("Erro ao deletar tarefa");
+            setMensagem("Erro ao atualizar status");
         }
     }
 
@@ -49,15 +50,24 @@ export function Home() {
     return (
         <>
             <section className="sectionQuadro">
-                {tarefasAFazer.length > 0 &&
-                    <Column nomeColuna="A fazer" items={tarefasAFazer} deleteTarefa={deleteTarefas}/>
-                }
-                {tarefasAndamento.length > 0 &&
-                    <Column nomeColuna="Andamento" items={tarefasAndamento} deleteTarefa={deleteTarefas}/>
-                }
-                {tarefasConcluido.length > 0 &&
-                    <Column nomeColuna="Concluido" items={tarefasConcluido} deleteTarefa={deleteTarefas}/>
-                }
+                <div>
+                    <h3>A fazer</h3>
+                    {tarefasAFazer.length > 0 &&
+                        <Column items={tarefasAFazer} deleteTarefa={deleteTarefas} patchTarefas={patchTarefas}/>
+                    }
+                </div>
+                <div>
+                    <h3>Andamento</h3>
+                    {tarefasAndamento.length > 0 &&
+                        <Column items={tarefasAndamento} deleteTarefa={deleteTarefas} patchTarefas={patchTarefas}/>
+                    }
+                </div>
+                <div>
+                    <h3>Concluído</h3>
+                    {tarefasConcluido.length > 0 &&
+                        <Column items={tarefasConcluido} deleteTarefa={deleteTarefas} patchTarefas={patchTarefas}/>
+                    }
+                </div>
             </section>
             {mensagem &&
                 <p className='mensagemCard'>{mensagem}</p>

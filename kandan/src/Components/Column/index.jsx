@@ -1,11 +1,15 @@
+import { useDroppable } from '@dnd-kit/core';
 import { Card } from '../Card';
 import './style.sass';
 
-export function Column({ nomeColuna, items, deleteTarefa, patchTarefas }) {
+// olha aqui
+export function Column({id,  nomeColuna, items, deleteTarefa, patchTarefas }) {
+    // faço o uso da referência do item no Drag and Frop e saindo o dom
+    const { setNodeRef } = useDroppable({ id });
+
     return (
-        <section className='coluna'>
-            <h2>{nomeColuna}</h2>
-            <p>Tarefas</p>
+        <section className='coluna' ref={ setNodeRef }>
+            <h3>{nomeColuna}</h3>
 
             {items.map((item, key) =>
                 <Card key={item.id} item={item} onDelete={() => deleteTarefa(item.id)} patchTarefas={patchTarefas}/>
@@ -13,3 +17,8 @@ export function Column({ nomeColuna, items, deleteTarefa, patchTarefas }) {
         </section>
     )
 }
+
+// DndContext - área onde posso ter elementos arrastáveis
+    // Droppable - onde posso soltar
+        // Draggable - pegar os itens
+

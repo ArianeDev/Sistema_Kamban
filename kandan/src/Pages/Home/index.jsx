@@ -2,10 +2,12 @@ import './../../style/cadCadastro.sass';
 import api from "../../Service/api";
 import { Column } from "../../Components/Column"
 import { useEffect, useState } from "react";
+import { DndContext } from '@dnd-kit/core'; // area que permite 
 
 export function Home() {
     const [dataTarefas, setDataTarefas] = useState([]);
     const [mensagem, setMensagem] = useState('');
+    const [tarefas, setTarefas] = useState([]);
 
     async function getTarefas() {
         try {
@@ -39,6 +41,23 @@ export function Home() {
         }
     }
 
+    function handleDragEnd(event) {
+        const { active, over } = event;
+
+        if (over && active) {
+            const tarefasId = active.id;
+            const novaColuna = over.id; // nova posição
+
+            setTarefas(prev =>
+                prev.map(tarefa => 
+                    tarefa.id === tarefasId ? { tarefa, status: novaColuna } : tarefa
+                )
+            );
+
+            patchTarefas(tarefasId, novaColuna);
+        }
+    }
+
     useEffect(() => {
         getTarefas();
     },[])
@@ -48,30 +67,15 @@ export function Home() {
     const tarefasConcluido = dataTarefas.filter(tarefa => tarefa.status_id == 3);
 
     return (
-        <>
+        <DndContext onDragEnd={handleDragEnd}>
             <section className="sectionQuadro">
-                <div>
-                    <h3>A fazer</h3>
-                    {tarefasAFazer.length > 0 &&
-                        <Column items={tarefasAFazer} deleteTarefa={deleteTarefas} patchTarefas={patchTarefas}/>
-                    }
-                </div>
-                <div>
-                    <h3>Andamento</h3>
-                    {tarefasAndamento.length > 0 &&
-                        <Column items={tarefasAndamento} deleteTarefa={deleteTarefas} patchTarefas={patchTarefas}/>
-                    }
-                </div>
-                <div>
-                    <h3>Concluído</h3>
-                    {tarefasConcluido.length > 0 &&
-                        <Column items={tarefasConcluido} deleteTarefa={deleteTarefas} patchTarefas={patchTarefas}/>
-                    }
-                </div>
+                <Column id={1} nomeColuna="A fazer" items={tarefasAFazer} deleteTarefa={deleteTarefas} patchTarefas={patchTarefas}/>
+                <Column id={2} nomeColuna="Andamento" items={tarefasAndamento} deleteTarefa={deleteTarefas} patchTarefas={patchTarefas}/>
+                <Column id={3} nomeColuna="Concluído" items={tarefasConcluido} deleteTarefa={deleteTarefas} patchTarefas={patchTarefas}/>
             </section>
             {mensagem &&
                 <p className='mensagemCard'>{mensagem}</p>
             }
-        </>
+        </ DndContext>
     )
 }

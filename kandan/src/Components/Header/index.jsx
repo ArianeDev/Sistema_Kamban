@@ -8,13 +8,13 @@ export function Header() {
             <h1 className='titulo'>Gerenciamento de tarefas</h1>
             <nav className='barra'>
                 <ul>
-                    <Link to={'/'}>
+                    <Link to={'/'} className='link'>
                         <li>Gerenciamento de tarefas</li>
                     </Link>
-                    <Link to={'/usuario'}>
+                    <Link to={'/usuario'} className='link'>
                         <li>Cadastro de usuário</li>
                     </Link>
-                    <Link to={'/tarefas'}>
+                    <Link to={'/tarefas'} className='link'>
                         <li>Cadastro de tarefa</li>
                     </Link>
                 </ul>

@@ -4,7 +4,7 @@ header
     display: flex
     justify-content: space-around 
     align-items: center
-    background-color: $cor-destaque
+    background-color: rgb(1, 31, 77)
     width: 100vw
     height: 9vh
     color: $link-color
@@ -18,6 +18,14 @@ header
             display: flex
             gap: 1rem
 
-            li
-                cursor: pointer
+            .link 
+                text-decoration: none
+
+                li
+                    cursor: pointer
+                    color: white
+
+                    &:hover
+                        opacity: 0.9 
+
 

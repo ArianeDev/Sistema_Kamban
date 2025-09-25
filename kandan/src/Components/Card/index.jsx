@@ -3,6 +3,7 @@ import "./style.sass";
 import api from "../../Service/api";
 import { useDraggable } from "@dnd-kit/core"; // biblioteca que permite o drag and drop - itens que são movimentados
 import { Modal } from "../Modal";
+import { Trash } from "lucide-react"
 
 export function Card({ item, onDelete, patchTarefas }) {
     const [dataStatus, setDataStatus] = useState([]);
@@ -46,16 +47,20 @@ export function Card({ item, onDelete, patchTarefas }) {
 
                 <section className="section_card_button">
                     <button onClick={() => setIsModalOpen(true)}>Editar</button>
-                    <button onClick={onDelete}>Excluir</button>
+                    <button onClick={onDelete} className="button_delete"> 
+                        <Trash /> Excluir
+                    </button>
                 </section>
 
-                <select onChange={(e) => setSelectStatus(e.target.value)} value={selectStatus}>
-                    {dataStatus.map((data) => (
-                    <option key={data.id} value={data.id}>{data.nome}</option>
-                    ))}
-                </select>
+                <section className="section_status">
+                    <select onChange={(e) => setSelectStatus(e.target.value)} value={selectStatus}>
+                        {dataStatus.map((data) => (
+                        <option key={data.id} value={data.id}>{data.nome}</option>
+                        ))}
+                    </select>
 
-                <button onClick={() => { patchTarefas(item.id, Number(selectStatus)) }}>Alterar status</button>
+                    <button onClick={() => { patchTarefas(item.id, Number(selectStatus)) }}>Alterar status</button>
+                </section>
             </article>
             {isModalOpen &&
                 <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>

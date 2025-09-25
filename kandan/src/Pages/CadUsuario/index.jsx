@@ -81,7 +81,7 @@ export function CadUsuario() {
         <form method='POST' onSubmit={handleSubmit(obterDados)} noValidate> 
             <h1>Cadastro de Usuário</h1>
             <div className="input_container">
-                <label>Nome: </label>
+                <label htmlFor='Nome' >Nome: </label>
                 <input 
                     type="text" 
                     {...register('username')}
@@ -95,7 +95,7 @@ export function CadUsuario() {
                 }
             </div>
             <div className="input_container">
-                <label>E-mail: </label>
+                <label htmlFor='Email'>E-mail: </label>
                 <input 
                     type="email" 
                     {...register('email')}
@@ -108,7 +108,7 @@ export function CadUsuario() {
                     </p>
                 }
             </div>
-            <button type="submit">Cadastrar</button>
+            <button type="submit" value="cadastrar">Cadastrar</button>
             <p>{mensagem}</p>
         </form>
     )

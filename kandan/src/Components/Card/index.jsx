@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import "./style.sass";
 import api from "../../Service/api";
-import { useDraggable } from "@dnd-kit/core"; // biblioteca que permite o drag and drop - itens que são movimentados
+// import { useDraggable } from "@dnd-kit/core"; // biblioteca que permite o drag and drop - itens que são movimentados
+import { useSortable } from "@dnd-kit/sortable";
 import { Modal } from "../Modal";
 import { Trash } from "lucide-react"
 
@@ -14,13 +15,14 @@ export function Card({ item, onDelete, patchTarefas }) {
     // atributes: é o que diz que pode ser movimentados pelo teclado ou mouse
     // listeners: é o fofoqueiro, ele fica escutando quando a ação vai começar
     // setNodeRef:
-    const {attributes, listeners, setNodeRef, transform} = useDraggable({
+    const {attributes, listeners, setNodeRef, transform} = useSortable({
         id: item.id
     })
 
-    const style = transform
-    ? {transform : `translate (${transform.x}px, ${transform.y}px)`}
-    : undefined;
+    const style = {
+        transform: CSS.Transform.toString(transform),
+        transition,
+    };
 
     async function selectDadosStatus() {
         try {
@@ -37,7 +39,7 @@ export function Card({ item, onDelete, patchTarefas }) {
 
     return (
         <>
-            <article className="card" key={item.id}>
+            <article className="card" key={item.id} style={style}>
                 <div ref={setNodeRef} {...listeners} {...attributes} >
                     <h4>{item.descricao}</h4>
                     <p><b>Setor:</b> {item.setor}</p>

@@ -1,4 +1,5 @@
 import { useDroppable } from '@dnd-kit/core';
+import { SortableContext } from '@dnd-kit/sortable'
 import { Card } from '../Card';
 import './style.sass';
 
@@ -11,11 +12,13 @@ export function Column({id,  nomeColuna, items, deleteTarefa, patchTarefas }) {
         <section className='coluna' ref={ setNodeRef }>
             <h3>{nomeColuna}</h3>
 
-            {items.map((item, key) =>
-                <Card key={item.id} item={item} onDelete={() => deleteTarefa(item.id)} patchTarefas={patchTarefas}/>
-            )}
+            <SortableContext items={items.map(item => item.id)}>
+                {items.map((item, key) =>
+                    <Card key={item.id} item={item} onDelete={() => deleteTarefa(item.id)} patchTarefas={patchTarefas}/>
+                )}
+            </SortableContext>
         </section>
-    )
+    );
 }
 
 // DndContext - área onde posso ter elementos arrastáveis

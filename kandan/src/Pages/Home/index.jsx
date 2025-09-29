@@ -2,19 +2,18 @@ import './../../style/cadCadastro.sass';
 import api from "../../Service/api";
 import { Column } from "../../Components/Column"
 import { useEffect, useState } from "react";
-import { DndContext } from '@dnd-kit/core'; // area que permite 
+import { closestCenter, DndContext } from '@dnd-kit/core'; // area que permite 
 
 export function Home() {
-    const [dataTarefas, setDataTarefas] = useState([]);
+    const [dataTarefas, setTarefas] = useState([]);
     const [mensagem, setMensagem] = useState('');
-    const [tarefas, setTarefas] = useState([]);
 
     async function getTarefas() {
         try {
             const response = await api.get('tarefas/');
-            setDataTarefas(response.data);            
+            setTarefas(response.data);
         } catch (error) {
-            console.log("Erro ao carregar.");
+            console.log("Erro ao carregar.", error);
         }
     }
 
@@ -25,7 +24,7 @@ export function Home() {
 
             setMensagem("Tarefa deletado com sucesso");
         } catch (error) {
-            setMensagem("Erro ao deletar tarefa");
+            setMensagem("Erro ao deletar tarefa", error);
         }
     
     }
@@ -33,29 +32,34 @@ export function Home() {
         console.log("Atualizando tarefa", id, "com status", status_id);
         try {
             await api.patch(`tarefas/${id}/`, { status_id });            
-            getTarefas();       
+            getTarefas();
 
             setMensagem("Status atualizado com sucesso");
         } catch (error) {
-            setMensagem("Erro ao atualizar status");
+            setMensagem("Erro ao atualizar status", error);
         }
     }
 
     function handleDragEnd(event) {
         const { active, over } = event;
 
-        if (over && active) {
-            const tarefasId = active.id;
-            const novaColuna = over.id; // nova posição
+        const colunasValidas = [1, 2, 3];        
 
-            setTarefas(prev =>
-                prev.map(tarefa => 
-                    tarefa.id === tarefasId ? { tarefa, status: novaColuna } : tarefa
-                )
-            );
-
-            patchTarefas(tarefasId, novaColuna);
+        if (!over || !colunasValidas.includes(over.id)) {
+            setMensagem("Solte dentro de uma colunas válida");
+            return;
         }
+
+        const tarefasId = active.id;
+        const novaColuna = over.id; // nova posição
+
+        setTarefas(prev =>
+            prev.map(tarefa => 
+                tarefa.id === tarefasId ? { tarefa, status_id: novaColuna } : tarefa
+            )
+        );
+
+        patchTarefas(tarefasId, novaColuna);
     }
 
     useEffect(() => {
@@ -67,7 +71,10 @@ export function Home() {
     const tarefasConcluido = dataTarefas.filter(tarefa => tarefa.status_id == 3);
 
     return (
-        <DndContext onDragEnd={handleDragEnd}>
+        <DndContext 
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+        >
             <section className="sectionQuadro">
                 <Column id={1} nomeColuna="A fazer" items={tarefasAFazer} deleteTarefa={deleteTarefas} patchTarefas={patchTarefas}/>
                 <Column id={2} nomeColuna="Andamento" items={tarefasAndamento} deleteTarefa={deleteTarefas} patchTarefas={patchTarefas}/>

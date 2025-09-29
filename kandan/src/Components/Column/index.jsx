@@ -1,5 +1,5 @@
 import { useDroppable } from '@dnd-kit/core';
-import { SortableContext } from '@dnd-kit/sortable'
+import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import { Card } from '../Card';
 import './style.sass';
 
@@ -12,8 +12,11 @@ export function Column({id,  nomeColuna, items, deleteTarefa, patchTarefas }) {
         <section className='coluna' ref={ setNodeRef }>
             <h3>{nomeColuna}</h3>
 
-            <SortableContext items={items.map(item => item.id)}>
-                {items.map((item, key) =>
+            <SortableContext 
+                items={items.map(item => item.id)}
+                strategy={verticalListSortingStrategy}
+            >
+                {items.map((item) =>
                     <Card key={item.id} item={item} onDelete={() => deleteTarefa(item.id)} patchTarefas={patchTarefas}/>
                 )}
             </SortableContext>

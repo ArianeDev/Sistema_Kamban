@@ -14,9 +14,9 @@ export function Modal({ isOpen, onClose, children }) {
     return (
         <section className="section_modal">
             <dialog ref={dialogRef} onCancel={onClose}>
-                <header>
+                <section className="header_modal">
                     <button type="button" onClick={onClose} aria-label="Fechar">✕</button>
-                </header>
+                </section>
                 <section>
                     {children}
                 </section>

@@ -95,7 +95,7 @@ export function CadUsuario() {
                 }
             </div>
             <div className="input_container" role='group' aria-label='Campos para editar tarefa'>
-                <label htmlFor='Email'>E-mail: </label>
+                <label htmlFor='Email'>Email: </label>
                 <input 
                     id='Email'
                     type="email" 

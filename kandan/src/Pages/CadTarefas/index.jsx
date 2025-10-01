@@ -109,9 +109,10 @@ export function CadTarefas() {
     return (
         <form method='POST' onSubmit={handleSubmit(obterDados)}>
             <h1>Cadastro de Tarefas</h1>
-            <div className="input_container">
-                <label>Descrição: </label>
+            <div className="input_container" role='group' aria-label='Campos para editar tarefa'>
+                <label htmlFor='descricao'>Descrição: </label>
                 <input
+                    id='descricao'
                     type="text"
                     {...register('descricao')}
                     placeholder='Digite uma breve descrição...'
@@ -123,9 +124,10 @@ export function CadTarefas() {
                     </p>
                 }
             </div>
-            <div className="input_container">
-                <label>Setor: </label>
+            <div className="input_container" role='group' aria-label='Campos para editar tarefa'>
+                <label htmlFor='setor'>Setor: </label>
                 <input 
+                    id='setor'
                     type="text"
                     {...register('setor')}
                     placeholder='Digite o setor...'
@@ -137,9 +139,10 @@ export function CadTarefas() {
                     </p>
                 }
             </div>
-            <div className="input_container">
-                <label>Prioridade: </label>
+            <div className="input_container" role='group' aria-label='Campos para editar tarefa'>
+                <label htmlFor='prioridade_id'>Prioridade: </label>
                 <select 
+                    id='prioridade_id'
                     name="prioridade" 
                     {...register('prioridade_id')}
                 >
@@ -152,9 +155,10 @@ export function CadTarefas() {
                     <p>{errors.prioridade_id.message}</p>
                 }
             </div>
-            <div className="input_container">
-                <label>Responsável</label>
+            <div className="input_container" role='group' aria-label='Campos para editar tarefa'>
+                <label htmlFor='usuario_id'>Responsável</label>
                 <select 
+                    id='usuario_id'
                     name="usuario_id" 
                     {...register('usuario_id')}
                 >

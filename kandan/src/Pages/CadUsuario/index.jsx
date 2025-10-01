@@ -40,7 +40,6 @@ const schemaCadUsuario = z.object({
         .regex(/^(?!.*\.\.)(?!.*\.$)[^\W][\w.-]{0,63}@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, {
             message: 'Email inválido'
         }),
-
 })
 
 export function CadUsuario() {
@@ -80,9 +79,10 @@ export function CadUsuario() {
         // noValidate serve para não ter válidações padões do HTML
         <form method='POST' onSubmit={handleSubmit(obterDados)} noValidate> 
             <h1>Cadastro de Usuário</h1>
-            <div className="input_container">
+            <div className="input_container" role='group' aria-label='Campos para editar tarefa'>
                 <label htmlFor='Nome' >Nome: </label>
                 <input 
+                    id='Nome'
                     type="text" 
                     {...register('username')}
                     placeholder='Digite seu nome...' 
@@ -94,9 +94,10 @@ export function CadUsuario() {
                     </p>
                 }
             </div>
-            <div className="input_container">
+            <div className="input_container" role='group' aria-label='Campos para editar tarefa'>
                 <label htmlFor='Email'>E-mail: </label>
                 <input 
+                    id='Email'
                     type="email" 
                     {...register('email')}
                     placeholder='Digite seu email...' 

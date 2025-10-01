@@ -13,7 +13,10 @@
     transform: scale(1.02)
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2)
 
-  h4
+  fieldset
+    border: none
+
+  h3
     color: #01214d
     font-size: 1.2rem
     margin-bottom: 0.5rem
@@ -28,13 +31,25 @@
 
 .section_card_button
   display: flex
-  justify-content: space-between
+  gap: 0.5rem
   margin-top: 1rem
 
-.button_delete
+  .button_icons
     display: flex
     align-items: center
     gap: 0.5rem
+
+    .icon
+      width: 1.4rem
+      height: 1.4rem
+
+.card-overlay 
+  transform: scale(1.05)
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3)
+  transition: transform 200ms ease
+  cursor: grabbing
+  pointer-events: none
+  opacity: 0.8
 
 button
     background-color: #01214d
@@ -51,9 +66,10 @@ button
 
 .section_status
     display: flex
-    align-items: center
+    flex-direction: column
     justify-content: space-between
     margin-top: 1rem
+    gap: 0.5rem
 
     select
       padding: 0.4rem
@@ -62,4 +78,7 @@ button
       background-color: #fff
       color: #01214d
       font-weight: bold
+      width: 40%
+
+    button
       width: 40%

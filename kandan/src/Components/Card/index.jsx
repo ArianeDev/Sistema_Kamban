@@ -5,23 +5,26 @@ import api from "../../Service/api";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { Modal } from "../Modal";
-import { Trash } from "lucide-react";
+import { PencilLine, Trash } from "lucide-react";
 import { FormEditarTarefa } from "../FormEditar";
 
-export function Card({ item, onDelete, patchTarefas }) {
+export function Card({ item, onDelete, patchTarefas, draggerId = null, isOverlay = false }) {
   const [dataStatus, setDataStatus] = useState([]);
   const [selectStatus, setSelectStatus] = useState(item.status_id);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [usuarios, setUsuarios] = useState([]);
   const [prioridades, setPrioridades] = useState([]);
 
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: item.id
   });
+
+  const isBeingDragged = draggerId === item.id;
 
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
+    opacity: isBeingDragged && !isDragging ? 0 : 1,
   };
 
   async function selectDadosStatus() {
@@ -47,29 +50,41 @@ export function Card({ item, onDelete, patchTarefas }) {
 
   return (
     <>
-      <article className="card" style={style}>
-        <div ref={setNodeRef} {...listeners} {...attributes}>
-          <h4>{item.descricao}</h4>
+      <article className={`card ${isOverlay ? 'card-overlay' : ''}`} style={style}>
+        <div 
+          ref={setNodeRef} {...listeners} {...attributes} 
+          role="group" 
+          aria-label={`Informações da tarefa ${item.descricao}`}
+        >
+          <h3>{item.descricao}</h3>
           <p><b>Setor:</b> {item.setor}</p>
           <p><b>Prioridade:</b> {prioridades.find(p => p.id === item.prioridade_id)?.nome || item.prioridade_id}</p>
           <p><b>Vinculado a:</b> {usuarios.find(u => u.id === item.usuario_id)?.username || item.usuario_id}</p>
         </div>
 
-        <section className="section_card_button">
-          <button onClick={() => setIsModalOpen(true)}>Editar</button>
-          <button onClick={onDelete} className="button_delete">
-            <Trash /> Excluir
-          </button>
-        </section>
-
         <section className="section_status">
-          <select onChange={(e) => setSelectStatus(e.target.value)} value={selectStatus}>
+          <label htmlFor="status_id"><b>Status:</b></label>
+          <select
+            id="status_id"
+            onChange={(e) => setSelectStatus(e.target.value)}
+            value={selectStatus}
+          >
             {dataStatus.map((data) => (
               <option key={data.id} value={data.id}>{data.nome}</option>
             ))}
           </select>
           <button onClick={() => patchTarefas(item.id, Number(selectStatus))}>Alterar status</button>
         </section>
+
+        <fieldset className="section_card_button">
+          <button onClick={() => setIsModalOpen(true)} className="button_icons">
+            <PencilLine className="icon"/>Editar
+          </button>
+          <button onClick={onDelete} className="button_icons">
+            <Trash className="icon"/> Excluir
+          </button>
+        </fieldset>
+
       </article>
 
       {isModalOpen &&

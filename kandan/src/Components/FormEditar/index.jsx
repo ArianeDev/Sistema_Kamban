@@ -7,10 +7,46 @@ import { CircleAlert } from 'lucide-react';
 import './style.sass';
 
 const schema = z.object({
-  descricao: z.string().min(5),
-  setor: z.string().min(2),
-  prioridade_id: z.string(),
-  usuario_id: z.string()
+  descricao: z.string()
+        .min(5, 'A descrição é obrigatória, informe pelo menos 5 caracteres')
+        .max(50, 'A descrição deve ter no máximo 50 caracteres')
+        .refine(val => {
+            const palavras = val.trim().toLowerCase().split(/\s+/);
+            const palavrasUnicas = new Set(palavras);
+            return palavrasUnicas.size >= palavras.length - 1;
+        }, {
+            message: "Evite repetir a mesma palavra várias vezes",
+        })
+        .refine(val => val === val.trim(), {
+            message: "Não pode começar ou terminar com espaço",
+        })
+        .regex(/^[\p{L}\p{N}\s!?".;+\-()*%$=]+$/u, {
+            message: "A descrição contém caracteres inválidos",
+        })
+        .transform(val => {
+            const texto = val.trim().toLowerCase();
+            return texto.charAt(0).toUpperCase() + texto.slice(1);
+        }),
+    setor: z.string()
+        .min(2, 'O setor é obrigatório')
+        .max(50, 'O setor deve ter no máximo 50 caracteres')
+        .refine(val => {
+            const palavras = val.trim().toLowerCase().split(/\s+/);
+            const palavrasUnicas = new Set(palavras);
+            return palavrasUnicas.size >= palavras.length - 1;
+        }, {
+            message: "Evite repetir a mesma palavra várias vezes",
+        })
+        .refine(val => val === val.trim(), {
+            message: "Não pode começar ou terminar com espaço",
+        })
+        .regex(/^[\p{L}\p{N}\s!?".;+\-()*%$=]+$/u, {
+            message: "A descrição contém caracteres inválidos",
+        }),
+    prioridade_id: z.string()
+        .min(1, 'Selecione uma prioridade'),
+    usuario_id: z.string()
+        .min(1, 'Selecione um responsável')
 });
 
 export function FormEditarTarefa({ tarefa, onClose, onAtualizado }) {
@@ -59,32 +95,32 @@ export function FormEditarTarefa({ tarefa, onClose, onAtualizado }) {
     <form onSubmit={handleSubmit(atualizar)} className='formAtualizar' noValidate>
       <h2>Editar Tarefa</h2>
 
-      <div className="input_container">
-        <label>Descrição:</label>
-        <input {...register('descricao')} />
+      <div className="input_container" role='group' aria-label='Campos para editar tarefa'>
+        <label htmlFor='descricao'>Descrição:</label>
+        <input id='descricao' {...register('descricao')} />
         {errors.descricao && <p><CircleAlert /> {errors.descricao.message}</p>}
       </div>
 
-      <div className="input_container">
-        <label>Setor:</label>
-        <input {...register('setor')} />
+      <div className="input_container" role='group' aria-label='Campos para editar tarefa'>
+        <label htmlFor='setor'>Setor:</label>
+        <input id='setor' {...register('setor')} />
         {errors.setor && <p><CircleAlert /> {errors.setor.message}</p>}
       </div>
 
-      <div className="input_container">
-        <label>Prioridade:</label>
-        <select {...register('prioridade_id')}>
+      <div className="input_container" role='group' aria-label='Campos para editar tarefa'>
+        <label htmlFor='prioridade_id'>Prioridade:</label>
+        <select id='prioridade_id' {...register('prioridade_id')}>
           {prioridades.map(p => (
             <option key={p.id} value={p.id}>{p.nome}</option>
           ))}
         </select>
       </div>
 
-      <div className="input_container">
-        <label>Usuário Vinculado:</label>
-        <select {...register('usuario_id')}>
-          {usuarios.map(u => (
-            <option key={u.id} value={u.id}>{u.username}</option>
+      <div className="input_container" role='group' aria-label='Campos para editar tarefa'>
+        <label htmlFor='usuario_id'>Usuário Vinculado:</label>
+        <select id='usuario_id' {...register('usuario_id')}>
+          {usuarios.map(index => (
+            <option key={index.id} value={index.id}>{index.username}</option>
           ))}
         </select>
       </div>

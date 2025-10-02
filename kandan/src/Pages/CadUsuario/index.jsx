@@ -10,9 +10,6 @@ const schemaCadUsuario = z.object({
     username: z.string()
         .min(5, 'O nome é obrigatório, informe pelo menos 5 caracteres')
         .max(100, 'O nome deve ter no máximo 100 caracteres')
-        .regex(/^[A-Za-zÀ-ÿ]+(?: [A-Za-zÀ-ÿ]+)*$/, {
-            message: 'O nome deve conter apenas letras e espaços',
-        })
         .refine(val => {
             const trimmed = val.trim();
             const palavras = trimmed.split(/\s+/);
@@ -23,7 +20,10 @@ const schemaCadUsuario = z.object({
 
             return semEspacoNasPontas && semRepeticaoExcessiva;
         }, {
-            message: "Evite repetir o mesmo nome e não use espaço no início ou fim",
+            message: "Evite repetir o mesmo nome e não use espaços no início ou fim, e nem múltiplos espaços entre palavras",
+        })
+        .regex(/^[A-Za-zÀ-ÿ]+(?: [A-Za-zÀ-ÿ]+)*$/, {
+            message: 'O nome deve conter apenas letras e espaços',
         })
         .transform(val => val
             .replace(/\s+/g, ' ') // transforma multiplos espaços por um
@@ -37,8 +37,8 @@ const schemaCadUsuario = z.object({
         .refine(val => val === val.trim(), {
             message: "Não pode começar ou terminar com espaço",
         })
-        .regex(/^(?!.*\.\.)(?!.*\.$)[^\W][\w.-]{0,63}@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, {
-            message: 'Email inválido'
+        .regex(/^(?!\s)(?!.*\s$)(?!.*\.\.)(?!.*\.$)[^\W][\w.-]{0,63}@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, {
+            message: 'Email inválido, não pode conter espaços',
         }),
 })
 
@@ -89,7 +89,7 @@ export function CadUsuario() {
                 />
                 {errors.username &&
                     <p>
-                        <CircleAlert />
+                        {/* <CircleAlert /> */}
                         {errors.username.message}
                     </p>
                 }

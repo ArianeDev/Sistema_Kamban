@@ -70,7 +70,7 @@ export function CadTarefas() {
             const response = await api.get('prioridades/');
             setDataPrioridade(response.data);
         } catch (error) {
-            console.log("Erro ao carregar.");
+            console.log("Erro ao carregar.", error);
         }
     }
 
@@ -79,7 +79,7 @@ export function CadTarefas() {
             const response = await api.get('users/');
             setDataResponsavel(response.data);
         } catch (error) {
-            console.log("Erro ao carregar.");
+            console.log("Erro ao carregar.", error);
         }
     }
     

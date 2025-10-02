@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { CadUsuario } from "../Pages/CadUsuario";
 import { describe, it, expect } from 'vitest';
 
@@ -37,4 +37,65 @@ describe("Cadastro de usuário", () => {
         const mensagemEmail = await screen.findByText(/O e-mail é obrigatório/i);
         expect(mensagemEmail).to.exist;
     });
+    // Username tests
+    it("Exibe erro para nome com número", async () => {
+        render(<CadUsuario />);
+
+        fireEvent.change(screen.getByLabelText(/Nome/i), { target: { value: 'Ariane1' }});
+        fireEvent.click(screen.getByRole("button", { name: /Cadastrar/i }));
+
+        expect(await screen.findByText(/O nome deve conter apenas letras e espaços/i)).toBeTruthy();
+    });
+    it("Exibe erro para nome com caractere especial", async () => {
+        render(<CadUsuario />);
+
+        fireEvent.change(screen.getByLabelText(/Nome/i), { target: { value: 'Ariane@' }});
+        fireEvent.click(screen.getByRole("button", { name: /Cadastrar/i }));
+
+        expect(await screen.findByText(/O nome deve conter apenas letras e espaços/i)).toBeTruthy();
+    });
+    it("Exibe erro para nome com espaço no início ou no fim", async () => {
+        render(<CadUsuario />);
+
+        fireEvent.change(screen.getByLabelText(/Nome/i), { target: { value: ' Ariane' }});
+        fireEvent.click(screen.getByRole("button", { name: /Cadastrar/i }));
+
+        expect(await screen.findByText(/Evite repetir o mesmo nome e não use espaços no início ou fim, e nem múltiplos espaços entre palavras/i)).toBeTruthy();
+    });
+    it("Exibe erro para nome com repetição excessiva", async () => {
+        render(<CadUsuario />);
+
+        fireEvent.change(screen.getByLabelText(/Nome/i), { target: { value: 'Ariane Ariane Ariane' }});
+        fireEvent.click(screen.getByRole("button", { name: /Cadastrar/i }));
+
+        expect(await screen.findByText(/Evite repetir o mesmo nome e não use espaços no início ou fim, e nem múltiplos espaços entre palavras/i)).toBeTruthy();
+    });
+    it("Exibe erro com nomes maiores que 100 caracteres", async () => {
+        render(<CadUsuario />);
+
+        const nomeLongo = 'A'.repeat(101);
+        fireEvent.change(screen.getByLabelText(/Nome/i), { target: { value: nomeLongo }});
+        fireEvent.click(screen.getByRole("button", { name: /Cadastrar/i }));
+
+        expect(await screen.findByText(/O nome deve ter no máximo 100 caracteres/i)).toBeTruthy();
+    });
+    // Email tests
+    it("Exibe erro para email inválido", async () => {
+        render(<CadUsuario />);
+
+        fireEvent.change(screen.getByLabelText(/Email/i), { target: { value: 'ariane@com' }});
+        fireEvent.click(screen.getByRole("button", { name: /Cadastrar/i }));
+
+        expect(await screen.findByText(/Email inválido, não pode conter espaços/i)).toBeTruthy();
+    });
+    // verificar esse teste
+    // it("Exibe erro para email com espaço no início ou no fim", async () => {
+    //     render(<CadUsuario />);
+
+    //     fireEvent.change(screen.getByLabelText(/Email/i), { target: { value: ' ariane@gmail.com' }});
+    //     fireEvent.click(screen.getByRole("button", { name: /Cadastrar/i }));
+
+    //     expect(await screen.findByText(/Não pode começar ou terminar com espaço/i)).toBeTruthy();
+    // });
+
 });

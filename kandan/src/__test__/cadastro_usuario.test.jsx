@@ -38,7 +38,9 @@ describe("Cadastro de usuário", () => {
         expect(mensagemEmail).to.exist;
     });
 
-    // Username tests
+    /* ------------------------------- */ 
+	/* Teste no campo   - nome         */
+	/* ------------------------------- */
     it("Exibe erro para nome com número", async () => {
         render(<CadUsuario />);
 
@@ -81,7 +83,9 @@ describe("Cadastro de usuário", () => {
         expect(await screen.findByText(/O nome deve ter no máximo 100 caracteres/i)).toBeTruthy();
     });
     
-    // Email tests
+    /* ------------------------------- */ 
+	/* Teste no   campo - email        */
+	/* ------------------------------- */
     it("Exibe erro para email inválido", async () => {
         render(<CadUsuario />);
 

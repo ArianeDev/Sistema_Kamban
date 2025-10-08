@@ -43,6 +43,9 @@ describe("Cadastro de tarefas", () => {
 		expect(responsavelSelect.value).toBe(responsavelOption.value);
 	});
 
+	/* ------------------------------- */ 
+	/* Teste nos campos - select       */
+	/* ------------------------------- */
 	it("Exibe mensagem de erro quando os selects não são selecionados", async () => {
 		render(<CadTarefas />);
 
@@ -58,7 +61,9 @@ describe("Cadastro de tarefas", () => {
 		expect(await screen.findByText(/Selecione um responsável/i)).toBeTruthy();
 	})
 
-	// Descrição
+	/* ------------------------------- */ 
+	/* Teste no campo  - descrição     */
+	/* ------------------------------- */
 	it("Exibe mensagem de erro quando o campo descrição estiver vazio", async () => {
 		render(<CadTarefas />);
 
@@ -104,8 +109,10 @@ describe("Cadastro de tarefas", () => {
 		
 		expect(await screen.findByText(/A descrição contém caracteres inválidos/i)).toBeTruthy();
 	})
-	
-	// Setor
+
+	/* ------------------------------- */ 
+	/* Teste no campo  - setor         */
+	/* ------------------------------- */
 	it("Exibe mensagem de erro quando o campo setor estiver vazio", async () => {
 		render(<CadTarefas />);
 		

@@ -57,6 +57,7 @@ describe("Cadastro de tarefas", () => {
 		expect(await screen.findByText(/Selecione uma prioridade/i)).toBeTruthy();
 		expect(await screen.findByText(/Selecione um responsável/i)).toBeTruthy();
 	})
+
 	// Descrição
 	it("Exibe mensagem de erro quando o campo descrição estiver vazio", async () => {
 		render(<CadTarefas />);
@@ -103,6 +104,7 @@ describe("Cadastro de tarefas", () => {
 		
 		expect(await screen.findByText(/A descrição contém caracteres inválidos/i)).toBeTruthy();
 	})
+	
 	// Setor
 	it("Exibe mensagem de erro quando o campo setor estiver vazio", async () => {
 		render(<CadTarefas />);

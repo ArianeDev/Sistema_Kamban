@@ -37,6 +37,7 @@ describe("Cadastro de usuário", () => {
         const mensagemEmail = await screen.findByText(/O e-mail é obrigatório/i);
         expect(mensagemEmail).to.exist;
     });
+
     // Username tests
     it("Exibe erro para nome com número", async () => {
         render(<CadUsuario />);
@@ -79,6 +80,7 @@ describe("Cadastro de usuário", () => {
 
         expect(await screen.findByText(/O nome deve ter no máximo 100 caracteres/i)).toBeTruthy();
     });
+    
     // Email tests
     it("Exibe erro para email inválido", async () => {
         render(<CadUsuario />);

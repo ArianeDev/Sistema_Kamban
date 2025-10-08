@@ -34,11 +34,11 @@ const schemaCadUsuario = z.object({
     email: z.string()
         .min(1, 'O e-mail é obrigatório')
         .max(100, 'O e-mail deve ter no máximo 100 caracteres')
-        .refine(val => val === val.trim(), {
-            message: "Não pode começar ou terminar com espaço",
+        .refine(val => !val.includes(' '), {
+            message: 'O e-mail não pode conter espaços',
         })
-        .regex(/^(?!\s)(?!.*\s$)(?!.*\.\.)(?!.*\.$)[^\W][\w.-]{0,63}@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, {
-            message: 'Email inválido, não pode conter espaços',
+        .regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, {
+            message: 'Formato de e-mail inválido',
         }),
 })
 

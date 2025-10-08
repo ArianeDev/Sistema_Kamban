@@ -40,7 +40,7 @@ const schemaCadTarefas = z.object({
             message: "Não pode começar ou terminar com espaço",
         })
         .regex(/^[\p{L}\p{N}\s!?".;+\-()*%$=]+$/u, {
-            message: "A descrição contém caracteres inválidos",
+            message: "O setor contém caracteres inválidos",
         }),
     prioridade_id: z.string()
         .min(1, 'Selecione uma prioridade'),

@@ -86,16 +86,23 @@ describe("Cadastro de usuário", () => {
         fireEvent.change(screen.getByLabelText(/Email/i), { target: { value: 'ariane@com' }});
         fireEvent.click(screen.getByRole("button", { name: /Cadastrar/i }));
 
-        expect(await screen.findByText(/Email inválido, não pode conter espaços/i)).toBeTruthy();
+        expect(await screen.findByText(/Formato de e-mail inválido/i)).toBeTruthy();
     });
-    // verificar esse teste
-    // it("Exibe erro para email com espaço no início ou no fim", async () => {
-    //     render(<CadUsuario />);
+    it("Exibe erro para email com espaço no meio", async () => {
+        render(<CadUsuario />);
 
-    //     fireEvent.change(screen.getByLabelText(/Email/i), { target: { value: ' ariane@gmail.com' }});
-    //     fireEvent.click(screen.getByRole("button", { name: /Cadastrar/i }));
+        fireEvent.change(screen.getByLabelText(/Email/i), { target: { value: 'a riane@gmail.com' }});
+        fireEvent.click(screen.getByRole("button", { name: /Cadastrar/i }));
 
-    //     expect(await screen.findByText(/Não pode começar ou terminar com espaço/i)).toBeTruthy();
-    // });
+        expect(await screen.findByText(/O e-mail não pode conter espaços/i)).toBeTruthy();
+    });
+    it ("Exibe erro para email com mais de 101 caracteres", async () => {
+        render(<CadUsuario />);
 
+        const emailLongo = 'A'.repeat(101) + '@gmail.com';
+        fireEvent.change(screen.getByLabelText(/Email/i), { target: { value: emailLongo}});
+        fireEvent.click(screen.getByRole("button", { name: /Cadastrar/i }));
+
+        expect(await screen.findByText(/O e-mail deve ter no máximo 100 caracteres/i)).toBeTruthy();
+    })
 });
